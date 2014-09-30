@@ -1,12 +1,12 @@
 /*
 ** erixposure.h for EriXposure Meter
-**
-** Made by Jocelyn GIRARD
-** Login   <jocelyn@erioxyde.com>
-**
-** Started on  Sun Sep 28 Jocelyn GIRARD
-** Last update Mon Sep 29 19:03:12 2014 Jocelyn GIRARD
-*/
+ **
+ ** Made by Jocelyn GIRARD
+ ** Login   <jocelyn@erioxyde.com>
+ **
+ ** Started on  Sun Sep 28 Jocelyn GIRARD
+ ** Last update Mon Sep 29 19:03:12 2014 Jocelyn GIRARD
+ */
 
 #ifndef ERIXPOSURE.H
 #define ERIXPOSURE.H
@@ -30,14 +30,17 @@
 #define OLED_RESET                   13
 
 enum TimeType
-  {
-    OutOfRange,
-    Minutes,
-    Seconds,
-    Fractional
-  };
+{
+  OutOfRange,
+  Minutes,
+  Seconds,
+  Fractional
+};
 
-const float apertures[] = { 1.2, 1.4, 1.8, 2, 2.8, 4, 5.6, 8, 11, 16 };
-const float isos[] = { 100, 200, 400, 800, 1600, 3200, 6400 };
+const float apertures[] = { 
+  1.2, 1.4, 1.8, 2, 2.8, 4, 5.6, 8, 11, 16 };
+const float isos[] = { 
+  100, 200, 400, 800, 1600, 3200, 6400 };
 
 #endif
+
