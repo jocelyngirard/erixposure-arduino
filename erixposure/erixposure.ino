@@ -4,11 +4,10 @@
  ** Made by Jocelyn GIRARD
  ** Login   <jocelyn@erioxyde.com>
  **
- ** Started on  Sun Sep 28 2014 Jocelyn GIRARD
+ ** Started on Sep 28 2014 by Jocelyn GIRARD
  **
- ** Based on the work of Kevin Kadooka (http://kadookacameraworks.com/light.html)
- **
- ** ---
+ ** Project started from the base initiated by Kevin Kadooka 
+ ** http://kadookacameraworks.com/light.html
  **
  ** Reference en.wikipedia.org/wiki/Exposure_value
  ** 

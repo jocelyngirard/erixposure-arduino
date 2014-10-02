@@ -4,8 +4,7 @@
  ** Made by Jocelyn GIRARD
  ** Login   <jocelyn@erioxyde.com>
  **
- ** Started on  Sun Sep 28 Jocelyn GIRARD
- ** Last update Mon Sep 29 19:03:12 2014 Jocelyn GIRARD
+ ** Started on Sep 28 2014 by Jocelyn GIRARD
  */
 
 #ifndef ERIXPOSURE.H
