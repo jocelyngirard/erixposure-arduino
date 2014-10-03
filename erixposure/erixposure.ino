@@ -131,6 +131,7 @@ void computeShutterSpeedAndDisplay()
 {
   float luxValue = getLuxValue();
   int shutterSpeedIndex = 0;
+  boolean isPositive;
   float exposureValue = log(luxValue / 2.5) / log(2);
   float exposureTimeInSeconds = pow(apertures[apertureIndex], 2) / (luxValue / (250 / isos[isoIndex]));
   
@@ -167,34 +168,42 @@ void computeShutterSpeedAndDisplay()
     for (int index = 0; index < length(shutterSpeeds); index++)
     {
       float shutterSpeed = shutterSpeeds[index];
-      float speedGap = fabs(exposureTimeInSeconds - shutterSpeed);
-      if (speedGap < shortestSpeedGap)
+      float speedGap = exposureTimeInSeconds - shutterSpeed;
+      float absSpeedGap = fabs(speedGap);
+      if (absSpeedGap < shortestSpeedGap)
       {
-        shortestSpeedGap = speedGap;
+        shortestSpeedGap = absSpeedGap;
         shutterSpeedIndex = index;
+        isPositive = speedGap < 0;
       }
     }
     display.println(shutterSpeedTexts[shutterSpeedIndex]);
+    display.setTextSize(1);
+    display.setCursor(6 * BIG_CHAR_WIDTH + (CHAR_WIDTH / 2) , 1 * BIG_CHAR_WIDTH + CHAR_HEIGHT + 1);
+    display.setTextColor(WHITE, BLACK);
+    display.write(isPositive ? 24 : 25);
   }
-
+  
   // We draw the separator
   display.drawLine(73, 0, 73, 32, WHITE);
 
   // We display the ISO value
+  display.setTextColor(WHITE);
   display.setTextSize(1);
   display.setCursor(76, 0);
-  display.print("ISO");
-  display.println(isos[isoIndex], 0);
+  display.print(isos[isoIndex], 0);
+  display.println(" ISO");
   
   // We display the exposure value
   display.setCursor(76,11);
-  display.print("EV=");
-  display.println(exposureValue, 1);
+  display.print(exposureValue, 1);
+  display.println(" Ev");
+
   
   // We display the Lux value
   display.setCursor(76, 22);
-  display.print(luxValue, 1);
-  display.println("Lx");
+  display.print(luxValue, 0);
+  display.println(" Lx");
 
   display.display();
   display.clearDisplay();

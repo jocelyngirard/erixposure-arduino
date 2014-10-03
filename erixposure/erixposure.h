@@ -12,6 +12,11 @@
 
 #define length(array)  (sizeof(array) / sizeof(array[0]))
 
+#define CHAR_WIDTH                   5
+#define CHAR_HEIGHT                  8
+#define BIG_CHAR_WIDTH               CHAR_WIDTH * 2
+#define BIG_CHAR_HEIGHT              CHAR_HEIGHT * 2
+
 #define BATTERY_PIN                  0
 #define BATTERY_CELLS_COUNT          1 // The number of cells on lipo: 1 for 1S, 2 for 2S, ...
 #define BATTERY_MIN_VOLTAGE_PER_CELL 3.7 // 3.7v per cell
