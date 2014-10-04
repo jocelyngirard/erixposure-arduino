@@ -9,7 +9,7 @@
  ** Project started from the base initiated by Kevin Kadooka 
  ** http://kadookacameraworks.com/light.html
  **
- ** Reference en.wikipedia.org/wiki/Exposure_value
+ ** Reference http://en.wikipedia.org/wiki/Light_meter#Exposure_meter_calibration
  ** 
  ** EV : Exposure Value
  ** Lux : Illuminance
@@ -45,6 +45,7 @@ boolean save = 0; //Save to EEPROM state
 
 int apertureIndex;
 int isoIndex;
+int lightMeteringType;
 
 void setup()
 {
@@ -58,16 +59,21 @@ void setup()
     display.display();
     display.clearDisplay();
   }
-  apertureIndex = EEPROM.read(APERTURE_MEMORY_ADDR);
-  isoIndex = EEPROM.read(ISO_MEMORY_ADDR);
 
+  apertureIndex = EEPROM.read(APERTURE_MEMORY_ADDR);
   if (apertureIndex >= length(apertures))
   {
     apertureIndex = 4;
   }
+  isoIndex = EEPROM.read(ISO_MEMORY_ADDR);
   if (isoIndex >= length(isos))
   {
-    isoIndex = 0;
+    isoIndex = 2;
+  }
+  lightMeteringType = EEPROM.read(LIGHT_TYPE_MEMORY_ADDR);
+  if (lightMeteringType == 255)
+  {
+    lightMeteringType = REFLECTED_METERING;
   }
 
   //luxMeter.setGain(TSL2561_GAIN_1X);      /* No gain ... use in bright light to avoid sensor saturation */
@@ -133,34 +139,51 @@ void computeShutterSpeedAndDisplay()
   int shutterSpeedIndex = 0;
   boolean isPositive;
   float exposureValue = log(luxValue / 2.5) / log(2);
-  float exposureTimeInSeconds = pow(apertures[apertureIndex], 2) / (luxValue / (250 / isos[isoIndex]));
-  
+
+  display.setTextSize(1);
+  display.setCursor(6 * BIG_CHAR_WIDTH + (CHAR_WIDTH / 2) , CHAR_HEIGHT / 2);
+  display.setTextColor(WHITE, BLACK);
+  float exposureTimeInSeconds;
+  switch (lightMeteringType)
+  {
+  case INCIDENT_METERING:
+    exposureTimeInSeconds = pow(apertures[apertureIndex], 2) / (luxValue / (INCIDENT_CALIBRATION_CONSTANT / isos[isoIndex]));
+    display.write('I');
+    break;
+
+  default:
+  case REFLECTED_METERING:
+    exposureTimeInSeconds = (pow(apertures[apertureIndex], 2) * REFLECTED_CALIBRATION_CONSTANT) / (luxValue * isos[isoIndex]);
+    display.write('R');
+    break;
+  }
+
   display.setTextSize(2);
   display.setTextColor(WHITE);
   display.setCursor(0,0);
   display.print("f/");
   display.println(apertures[apertureIndex], 1);
-  
+
   // Out of Range management, this happens if the sensor is overloaded or senses no light.
   if (luxValue == 0) 
   {
     display.println("OOR!");
   }
-  
+
   // Minutes management
   else if (exposureTimeInSeconds >= 60.0)
   {
     display.print(exposureTimeInSeconds / 60.0, 1);
     display.println("m");
   }
-  
+
   // Seconds management 
   else if ((exposureTimeInSeconds >= 0.75) && (exposureTimeInSeconds < 60))
   {
     display.print(exposureTimeInSeconds, 1);
     display.println("s");
   }
-  
+
   // Fractional time management, we find the nearest standard shutter speed linked to exposure time value
   else if (exposureTimeInSeconds < 0.75)
   {
@@ -183,7 +206,7 @@ void computeShutterSpeedAndDisplay()
     display.setTextColor(WHITE, BLACK);
     display.write(isPositive ? 24 : 25);
   }
-  
+
   // We draw the separator
   display.drawLine(73, 0, 73, 32, WHITE);
 
@@ -193,13 +216,12 @@ void computeShutterSpeedAndDisplay()
   display.setCursor(76, 0);
   display.print(isos[isoIndex], 0);
   display.println(" ISO");
-  
+
   // We display the exposure value
   display.setCursor(76,11);
   display.print(exposureValue, 1);
   display.println(" Ev");
 
-  
   // We display the Lux value
   display.setCursor(76, 22);
   display.print(luxValue, 0);
@@ -363,6 +385,7 @@ void handleButtons()
   //      refresh();
   //    } 
 }
+
 
 
 
