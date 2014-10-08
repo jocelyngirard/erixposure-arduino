@@ -10,3 +10,6 @@
 [submodule "arduino-libraries/Adafruit_TSL2561"]
 	path = arduino-libraries/Adafruit_TSL2561
 	url = https://github.com/adafruit/Adafruit_TSL2561.git
+[submodule "arduino-libraries/Adafruit_TSL2591"]
+	path = arduino-libraries/Adafruit_TSL2591
+	url = https://github.com/adafruit/Adafruit_TSL2591_Library.git
