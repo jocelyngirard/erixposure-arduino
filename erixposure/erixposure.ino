@@ -52,6 +52,7 @@ void setup()
   pinMode(INC_BUTTON_PIN, INPUT_PULLUP); //Set up pin modes and start serial for debugging
   pinMode(DEC_BUTTON_PIN, INPUT_PULLUP);
   pinMode(ACTION_BUTTON_PIN, INPUT_PULLUP);
+
   Serial.begin(9600);
 
   display.begin(SSD1306_SWITCHCAPVCC);
@@ -149,6 +150,8 @@ void computeShutterSpeedAndDisplay()
   boolean isPositive;
   float exposureValue = log(luxValue / 2.5) / log(2);
 
+  float aperture = apertures[apertureIndex];
+
   display.setTextSize(1);
   display.setCursor(6 * BIG_CHAR_WIDTH + (CHAR_WIDTH / 2) , CHAR_HEIGHT / 2);
   display.setTextColor(WHITE, BLACK);
@@ -156,13 +159,13 @@ void computeShutterSpeedAndDisplay()
   switch (lightMeteringType)
   {
   case INCIDENT_METERING:
-    exposureTimeInSeconds = pow(apertures[apertureIndex], 2) / (luxValue / (INCIDENT_CALIBRATION_CONSTANT / isos[isoIndex]));
+    exposureTimeInSeconds = pow(aperture, 2) / (luxValue / (INCIDENT_CALIBRATION_CONSTANT / isos[isoIndex]));
     display.write('I');
     break;
 
   default:
   case REFLECTED_METERING:
-    exposureTimeInSeconds = (pow(apertures[apertureIndex], 2) * REFLECTED_CALIBRATION_CONSTANT) / (luxValue * isos[isoIndex]);
+    exposureTimeInSeconds = (pow(aperture, 2) * REFLECTED_CALIBRATION_CONSTANT) / (luxValue * isos[isoIndex]);
     display.write('R');
     break;
   }
@@ -171,7 +174,7 @@ void computeShutterSpeedAndDisplay()
   display.setTextColor(WHITE);
   display.setCursor(0,0);
   display.print("f/");
-  display.println(apertures[apertureIndex], 1);
+  display.println(aperture, aperture == (int)aperture ? 0 : 1);
 
   // Out of Range management, this happens if the sensor is overloaded or senses no light.
   if (luxValue == 0) 
@@ -244,16 +247,16 @@ void computeShutterSpeedAndDisplay()
 // TODO : Refactor the buttons management to use the 'Surface Mount Navigation Switch Breakout'
 // (https://www.sparkfun.com/products/8236)
 void handleButtons()
-{
+{  
   boolean incrementButton = digitalRead(INC_BUTTON_PIN);
   boolean decrementButton = digitalRead(DEC_BUTTON_PIN);
   boolean meteringButton = digitalRead(ACTION_BUTTON_PIN);
 
-  if (meteringButton == false)
+  if (meteringButton == LOW)
   {
     computeShutterSpeedAndDisplay();
   }
-  else if (incrementButton == false)
+  else if (incrementButton == LOW)
   {
     if (apertureIndex >= (sizeof(apertures) / sizeof(float) - 1))
     {
@@ -266,7 +269,7 @@ void handleButtons()
     EEPROM.write(APERTURE_MEMORY_ADDR, apertureIndex);
     computeShutterSpeedAndDisplay();
   }
-  else if (decrementButton == false)
+  else if (decrementButton == LOW)
   {
     if (isoIndex >= (sizeof(isos) / sizeof(float) - 1))
     {

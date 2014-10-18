@@ -13,3 +13,6 @@
 [submodule "arduino-libraries/Adafruit_TSL2591"]
 	path = arduino-libraries/Adafruit_TSL2591
 	url = https://github.com/adafruit/Adafruit_TSL2591_Library.git
+[submodule "arduino-libraries/Button"]
+	path = arduino-libraries/Button
+	url = https://github.com/JChristensen/Button.git
