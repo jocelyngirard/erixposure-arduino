@@ -33,12 +33,12 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include <Adafruit_Sensor.h>
-#include <Adafruit_TSL2561_U.h>
+#include "Adafruit_TSL2591.h"
 
 #include "erixposure.h"
 
 Adafruit_SSD1306 display(OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
-Adafruit_TSL2561_Unified luxMeter = Adafruit_TSL2561_Unified(TSL2561_ADDR_FLOAT, 12345);
+Adafruit_TSL2591 luxMeter = Adafruit_TSL2591(2591);
 
 boolean isoMode = 0; //ISO mode state
 boolean save = 0; //Save to EEPROM state
@@ -49,9 +49,9 @@ int lightMeteringType;
 
 void setup()
 {
-  pinMode(INC_BUTTON_PIN, INPUT); //Set up pin modes and start serial for debugging
-  pinMode(DEC_BUTTON_PIN, INPUT);
-  pinMode(ACTION_BUTTON_PIN, INPUT);
+  pinMode(INC_BUTTON_PIN, INPUT_PULLUP); //Set up pin modes and start serial for debugging
+  pinMode(DEC_BUTTON_PIN, INPUT_PULLUP);
+  pinMode(ACTION_BUTTON_PIN, INPUT_PULLUP);
   Serial.begin(9600);
 
   display.begin(SSD1306_SWITCHCAPVCC);
@@ -60,31 +60,19 @@ void setup()
     display.clearDisplay();
   }
 
-  apertureIndex = EEPROM.read(APERTURE_MEMORY_ADDR);
-  if (apertureIndex >= length(apertures))
-  {
-    apertureIndex = 4;
-  }
-  isoIndex = EEPROM.read(ISO_MEMORY_ADDR);
-  if (isoIndex >= length(isos))
-  {
-    isoIndex = 2;
-  }
-  lightMeteringType = EEPROM.read(LIGHT_TYPE_MEMORY_ADDR);
-  if (lightMeteringType == 255)
-  {
-    lightMeteringType = REFLECTED_METERING;
-  }
+  // You can change the gain on the fly, to adapt to brighter/dimmer light situations
+  //luxMeter.setGain(TSL2591_GAIN_LOW);    // 1x gain (bright light)
+  luxMeter.setGain(TSL2591_GAIN_MED);      // 25x gain
+  //luxMeter.setGain(TSL2591_GAIN_HIGH);   // 428x gain
 
-  //luxMeter.setGain(TSL2561_GAIN_1X);      /* No gain ... use in bright light to avoid sensor saturation */
-  //luxMeter.setGain(TSL2561_GAIN_16X);     /* 16x gain ... use in low light to boost sensitivity */
-  luxMeter.enableAutoRange(true);            /* Auto-gain ... switches automatically between 1x and 16x */
-
-  //luxMeter.setIntegrationTime(TSL2561_INTEGRATIONTIME_13MS);     /* fast but low resolution */
-  //luxMeter.setIntegrationTime(TSL2561_INTEGRATIONTIME_101MS);      /* medium resolution and speed   */
-  luxMeter.setIntegrationTime(TSL2561_INTEGRATIONTIME_402MS);    /* 16-bit data but slowest conversions */
-
-  luxMeter.begin();
+  // Changing the integration time gives you a longer time over which to sense light
+  // longer timelines are slower, but are good in very low light situtations!
+  luxMeter.setTiming(TSL2591_INTEGRATIONTIME_100MS);  // shortest integration time (bright light)
+  //luxMeter.setTiming(TSL2591_INTEGRATIONTIME_200MS);
+  //luxMeter.setTiming(TSL2591_INTEGRATIONTIME_300MS);
+  //luxMeter.setTiming(TSL2591_INTEGRATIONTIME_400MS);
+  //luxMeter.setTiming(TSL2591_INTEGRATIONTIME_500MS);
+  //luxMeter.setTiming(TSL2591_INTEGRATIONTIME_600MS);  // longest integration time (dim light)
 
   checkBatteryVoltage();
 }
@@ -92,7 +80,7 @@ void setup()
 void loop()
 {
   handleButtons();
-  computeShutterSpeedAndDisplay();
+  // computeShutterSpeedAndDisplay();
 }
 
 // Need to be refactor, the voltage management is wrong
@@ -133,8 +121,29 @@ float getLuxValue()
   return lux;
 }
 
+void readEepromValues()
+{
+  apertureIndex = EEPROM.read(APERTURE_MEMORY_ADDR);
+  if (apertureIndex >= length(apertures))
+  {
+    apertureIndex = 4;
+  }
+  isoIndex = EEPROM.read(ISO_MEMORY_ADDR);
+  if (isoIndex >= length(isos))
+  {
+    isoIndex = 2;
+  }
+  lightMeteringType = EEPROM.read(LIGHT_TYPE_MEMORY_ADDR);
+  if (lightMeteringType == 255)
+  {
+    lightMeteringType = REFLECTED_METERING;
+  } 
+}
+
 void computeShutterSpeedAndDisplay()
 {
+  readEepromValues();
+
   float luxValue = getLuxValue();
   int shutterSpeedIndex = 0;
   boolean isPositive;
@@ -236,154 +245,40 @@ void computeShutterSpeedAndDisplay()
 // (https://www.sparkfun.com/products/8236)
 void handleButtons()
 {
-  //  boolean incrementButton = digitalRead(INC_BUTTON_PIN); //Poll for button presses
-  //  boolean decrementButton = digitalRead(DEC_BUTTON_PIN);
-  //  boolean meteringButton = digitalRead(ACTION_BUTTON_PIN);
-  //
-  //  /////////IF BUTTON 2 AND 3 ARE BOTH PRESSED, SAVE EEPROM DATA
-  //
-  //  if (incrementButton == true & meteringButton == true)
-  //    {
-  //      save = 1;
-  //    }
-  //  while (incrementButton == true & meteringButton == true)
-  //    {
-  //      delay(100);
-  //      incrementButton = digitalRead(INC_BUTTON_PIN);
-  //      decrementButton = digitalRead(DEC_BUTTON_PIN);
-  //      meteringButton = digitalRead(ACTION_BUTTON_PIN);
-  //    }
-  //
-  //  if (save == true) //If + increment and metering button are both pressed, save to EEPROM and display "Saved."
-  //    {
-  //      EEPROM.write(APERTURE_MEMORY_ADDR, apertureIndex);
-  //      EEPROM.write(ISO_MEMORY_ADDR, isoIndex);
-  //      Serial.print("Save = ");
-  //      Serial.println(save);
-  //      //display.clearDisplay();
-  //      display.setTextSize(2);
-  //      display.setTextColor(WHITE);
-  //      display.setCursor(0,0);
-  //      display.println("Saved.");
-  //      display.display();
-  //      delay(500);
-  //      display.clearDisplay();
-  //      save = 0;
-  //      incrementButton = 0;
-  //      decrementButton = 0;
-  //    }
-  //
-  //
-  //  //READ BUTTON 1 AND INCREMENT APERTURE VALUE
-  //  if (incrementButton == true)
-  //    {
-  //      if (apertureIndex >= (sizeof(apertures) / sizeof(float) - 1))
-  //	{
-  //	  apertureIndex = 0;
-  //	}
-  //      else
-  //	{
-  //	  apertureIndex += 1;
-  //	}
-  //    }
-  //  //READ BUTTON 2 AND INCREMENT APERTURE VALUE
-  //  if (decrementButton == true)
-  //    {
-  //      if (apertureIndex == 0)
-  //	{
-  //	  apertureIndex = (sizeof(apertures) / sizeof(float) - 1);
-  //	}
-  //      else
-  //	{
-  //	  apertureIndex -= 1;
-  //	}
-  //    }
-  //
-  //  //////////IF BUTTON 1 AND 2 ARE BOTH PRESSED, ENTER ISO MODE
-  //  if (incrementButton == true & decrementButton == true)
-  //    {
-  //      isoMode = 1;
-  //    }
-  //  while (incrementButton == true & decrementButton == true)
-  //    {
-  //      delay(100);
-  //      incrementButton = digitalRead(INC_BUTTON_PIN);
-  //      decrementButton = digitalRead(DEC_BUTTON_PIN);
-  //    }
-  //  while (isoMode == true)
-  //    {
-  //      incrementButton = digitalRead(INC_BUTTON_PIN);
-  //      decrementButton = digitalRead(DEC_BUTTON_PIN);
-  //      if (incrementButton == true & decrementButton == true)
-  //	{
-  //	  isoMode = 0;
-  //	}
-  //
-  //      //READ BUTTON 1 AND INCREMENT SENSITIVITY VALUE
-  //      if (incrementButton == true)
-  //	{
-  //	  if (isoIndex >= (sizeof(isos) / sizeof(float) - 1))
-  //	    {
-  //	      isoIndex = 0;
-  //	    }
-  //	  else
-  //	    {
-  //	      isoIndex += 1;
-  //	    }
-  //	}
-  //      //READ BUTTON 2 AND INCREMENT SENSITIVITY VALUE
-  //      if (decrementButton == true)
-  //	{
-  //	  if (isoIndex == 0)
-  //	    {
-  //	      isoIndex = (sizeof(isos) / sizeof(float) - 1);
-  //	    }
-  //	  else
-  //	    {
-  //	      isoIndex -= 1;
-  //	    }
-  //	}
-  //      refresh();
-  //      //DELAYS FOR BUTTON HOLD
-  //      while(incrementButton == true)
-  //	{
-  //	  delay(10);
-  //	  incrementButton = digitalRead(INC_BUTTON_PIN);
-  //	}
-  //      while(decrementButton == true)
-  //	{
-  //	  delay(10);
-  //	  decrementButton = digitalRead(DEC_BUTTON_PIN);
-  //	}
-  //      Serial.print("ISO_m = ");
-  //      Serial.println(isoIndex);
-  //      Serial.print("ISOmode =");
-  //      Serial.println(isoMode);
-  //    }
-  //
-  //  ///////END OF ISOMODE ROUTINE/////
-  //
-  //  //DELAYS FOR BUTTON HOLD
-  //  while(incrementButton == true)
-  //    {
-  //      delay(10);
-  //      incrementButton = digitalRead(INC_BUTTON_PIN);
-  //    }
-  //  while(decrementButton == true)
-  //    {
-  //      delay(10);
-  //      decrementButton = digitalRead(DEC_BUTTON_PIN);
-  //    }
-  //  Serial.print("Aperture_m = ");
-  //  Serial.println(apertureIndex);
-  //  Serial.print("ISOmode = ");
-  //  Serial.println(isoMode);
-  //  delay(10);
-  //
-  //  if (meteringButton == true)                        //If the metering button is pressed, get a new illuminance value.
-  //    {
-  //      refresh();
-  //    } 
+  boolean incrementButton = digitalRead(INC_BUTTON_PIN);
+  boolean decrementButton = digitalRead(DEC_BUTTON_PIN);
+  boolean meteringButton = digitalRead(ACTION_BUTTON_PIN);
+
+  if (meteringButton == false)
+  {
+    computeShutterSpeedAndDisplay();
+  }
+  else if (incrementButton == false)
+  {
+    if (apertureIndex >= (sizeof(apertures) / sizeof(float) - 1))
+    {
+      apertureIndex = 0;
+    }
+    else
+    {
+      apertureIndex += 1;
+    }
+    EEPROM.write(APERTURE_MEMORY_ADDR, apertureIndex);
+    computeShutterSpeedAndDisplay();
+  }
+  else if (decrementButton == false)
+  {
+    if (isoIndex >= (sizeof(isos) / sizeof(float) - 1))
+    {
+      isoIndex = 0;
+    }
+    else
+    {
+      isoIndex += 1;
+    }
+    EEPROM.write(ISO_MEMORY_ADDR, isoIndex);
+    computeShutterSpeedAndDisplay();
+  } 
 }
 
 

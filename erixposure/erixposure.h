@@ -27,8 +27,8 @@
 #define LIGHT_TYPE_MEMORY_ADDR       2
 
 #define INC_BUTTON_PIN               16
-#define DEC_BUTTON_PIN               10
-#define ACTION_BUTTON_PIN            14
+#define DEC_BUTTON_PIN               14
+#define ACTION_BUTTON_PIN            15
 
 #define OLED_MOSI                    9
 #define OLED_CLK                     10
