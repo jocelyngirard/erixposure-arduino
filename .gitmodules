@@ -16,3 +16,6 @@
 [submodule "arduino-libraries/Button"]
 	path = arduino-libraries/Button
 	url = https://github.com/JChristensen/Button.git
+[submodule "Arduino-Makefile"]
+	path = Arduino-Makefile
+	url = https://github.com/sudar/Arduino-Makefile.git
