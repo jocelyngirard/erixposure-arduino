@@ -7,6 +7,9 @@ project(ArduinoExample C CXX)
 set(ARDUINO_DEFAULT_BOARD mini328)
 set(ARDUINO_DEFAULT_PORT /dev/ttyUSB0)
 
+#set(EXECUTABLE_OUTPUT_PATH build)
+#set(LIBRARY_OUTPUT_PATH build)
+
 #print_board_list()
 #print_programmer_list()
 
