@@ -7,8 +7,8 @@
  ** Started on Sep 28 2014 by Jocelyn GIRARD
  */
 
-#ifndef ERIXPOSURE.H
-#define ERIXPOSURE.H
+#ifndef ERIXPOSURE_H
+#define ERIXPOSURE_H
 
 #define length(array)  (sizeof(array) / sizeof(array[0]))
 
@@ -48,5 +48,3 @@ const float shutterSpeeds[] = { 1/2.0, 1/4.0, 1/8.0, 1/15.0, 1/30.0, 1/60.0, 1/1
 const char* shutterSpeedTexts[] = { "1/2", "1/4", "1/8", "1/15", "1/30", "1/60", "1/125", "1/250", "1/500", "1/1000", "1/2000", "1/4000", "1/8000" };
 
 #endif
-
-
