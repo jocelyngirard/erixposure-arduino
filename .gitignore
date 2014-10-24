@@ -4,6 +4,10 @@
 *.DS_Store
 *.swp
 *.out
+*.a
+*.elf
+*.hex
+*.eep
 
 CMakeCache.txt
 CMakeFiles
