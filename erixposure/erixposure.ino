@@ -174,7 +174,7 @@ void computeShutterSpeedAndDisplay()
   display.setTextColor(WHITE);
   display.setCursor(0,0);
   display.print("f/");
-  display.println(aperture, aperture == (int)aperture ? 0 : 1);
+  display.println(aperture, aperture == (int) aperture ? 0 : 1);
 
   // Out of Range management, this happens if the sensor is overloaded or senses no light.
   if (luxValue == 0) 
