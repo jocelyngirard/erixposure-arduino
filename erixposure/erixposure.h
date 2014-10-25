@@ -47,4 +47,10 @@ const float isos[] = { 100, 200, 400, 800, 1600, 3200, 6400 };
 const float shutterSpeeds[] = { 1/2.0, 1/4.0, 1/8.0, 1/15.0, 1/30.0, 1/60.0, 1/125.0, 1/250.0, 1/500.0, 1/1000.0, 1/2000.0, 1/4000.0, 1/8000.0 };
 const char* shutterSpeedTexts[] = { "1/2", "1/4", "1/8", "1/15", "1/30", "1/60", "1/125", "1/250", "1/500", "1/1000", "1/2000", "1/4000", "1/8000" };
 
+void checkBatteryVoltage();
+void handleButtons();
+void computeShutterSpeedAndDisplay();
+float getLuxValue();
+void readEepromValues();
+
 #endif
