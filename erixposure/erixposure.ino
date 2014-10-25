@@ -27,8 +27,6 @@
 
 #include <EEPROM.h>
 #include <SPI.h>
-#include <Wire.h>
-#include <math.h>
 
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
@@ -39,9 +37,6 @@
 
 Adafruit_SSD1306 display(OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
 Adafruit_TSL2591 luxMeter = Adafruit_TSL2591(2591);
-
-boolean isoMode = 0; //ISO mode state
-boolean save = 0; //Save to EEPROM state
 
 int apertureIndex;
 int isoIndex;
