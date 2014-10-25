@@ -1,5 +1,5 @@
 /*
- ** erixposure.h for EriXposure Meter
+ ** EriXposure.h for EriXposure Meter
  **
  ** Made by Jocelyn GIRARD
  ** Login   <jocelyn@erioxyde.com>
