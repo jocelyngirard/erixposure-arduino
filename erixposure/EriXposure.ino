@@ -35,7 +35,6 @@
 #include <Adafruit_Sensor.h>
 #include "Adafruit_TSL2591.h"
 
-#include "DisplayParameter.h"
 #include "EriXposure.h"
 
 Adafruit_SSD1306 display(OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
@@ -90,7 +89,6 @@ void checkBatteryVoltage()
 
   if (currentVoltage < BATTERY_MIN_VOLTAGE)
   {
-      DisplayParameter lowBatery(5, 19, WHITE);
     display.setCursor(5, 19);
     display.setTextColor(WHITE);
     display.print("Low Battery! (");
