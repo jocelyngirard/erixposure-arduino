@@ -33,12 +33,22 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include <Adafruit_Sensor.h>
-#include "Adafruit_TSL2591.h"
+#include <Adafruit_TSL2591.h>
+
+#include <Button.h>
 
 #include "EriXposure.h"
 
+#if (SSD1306_LCDHEIGHT != 32)
+# error("Height incorrect, please fix Adafruit_SSD1306.h!");
+#endif
+
 Adafruit_SSD1306 display(OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
 Adafruit_TSL2591 luxMeter = Adafruit_TSL2591(2591);
+
+Button incrementButton(INC_BUTTON_PIN, PULLUP, INVERT, DEBOUNCE_MS);
+Button decrementButton(DEC_BUTTON_PIN, PULLUP, INVERT, DEBOUNCE_MS);
+Button meteringButton(ACTION_BUTTON_PIN, PULLUP, INVERT, DEBOUNCE_MS);
 
 int apertureIndex;
 int isoIndex;
@@ -77,8 +87,40 @@ void setup()
 
 void loop()
 {
-  handleButtons();
-  // computeShutterSpeedAndDisplay();
+  incrementButton.read();
+  decrementButton.read();
+  meteringButton.read();
+
+  if (meteringButton.wasReleased() == true)
+  {
+    computeShutterSpeedAndDisplay();
+  }
+  else if (incrementButton.wasReleased() == true)
+  {
+    if (apertureIndex >= (sizeof(apertures) / sizeof(float) - 1))
+    {
+      apertureIndex = 0;
+    }
+    else
+    {
+      apertureIndex += 1;
+    }
+    EEPROM.write(APERTURE_MEMORY_ADDR, apertureIndex);
+    computeShutterSpeedAndDisplay();
+  }
+  else if (decrementButton.wasReleased() == true)
+  {
+    if (isoIndex >= (sizeof(isos) / sizeof(float) - 1))
+    {
+      isoIndex = 0;
+    }
+    else
+    {
+      isoIndex += 1;
+    }
+    EEPROM.write(ISO_MEMORY_ADDR, isoIndex);
+    computeShutterSpeedAndDisplay();
+  } 
 }
 
 // Need to be refactor, the voltage management is wrong
@@ -241,45 +283,7 @@ void computeShutterSpeedAndDisplay()
   delay(500);
 }
 
-// TODO : Refactor the buttons management to use the 'Surface Mount Navigation Switch Breakout'
-// (https://www.sparkfun.com/products/8236)
-void handleButtons()
-{  
-  boolean incrementButton = digitalRead(INC_BUTTON_PIN);
-  boolean decrementButton = digitalRead(DEC_BUTTON_PIN);
-  boolean meteringButton = digitalRead(ACTION_BUTTON_PIN);
 
-  if (meteringButton == LOW)
-  {
-    computeShutterSpeedAndDisplay();
-  }
-  else if (incrementButton == LOW)
-  {
-    if (apertureIndex >= (sizeof(apertures) / sizeof(float) - 1))
-    {
-      apertureIndex = 0;
-    }
-    else
-    {
-      apertureIndex += 1;
-    }
-    EEPROM.write(APERTURE_MEMORY_ADDR, apertureIndex);
-    computeShutterSpeedAndDisplay();
-  }
-  else if (decrementButton == LOW)
-  {
-    if (isoIndex >= (sizeof(isos) / sizeof(float) - 1))
-    {
-      isoIndex = 0;
-    }
-    else
-    {
-      isoIndex += 1;
-    }
-    EEPROM.write(ISO_MEMORY_ADDR, isoIndex);
-    computeShutterSpeedAndDisplay();
-  } 
-}
 
 
 

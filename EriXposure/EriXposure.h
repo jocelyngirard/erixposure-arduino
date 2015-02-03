@@ -29,6 +29,13 @@
 #define ISO_MEMORY_ADDR              1
 #define LIGHT_TYPE_MEMORY_ADDR       2
 
+// Buttons paramters
+#define PULLUP true                  //To keep things simple, we use the Arduino's internal pullup resistor.
+#define INVERT true                  //Since the pullup resistor will keep the pin high unless the
+                                     //switch is closed, this is negative logic, i.e. a high state
+                                     //means the button is NOT pressed. (Assuming a normally open switch.)
+#define DEBOUNCE_MS 20               //A debounce time of 20 milliseconds usually works well for tactile button switches.
+
 // 3-way switch button pins
 #define INC_BUTTON_PIN               16
 #define DEC_BUTTON_PIN               14
