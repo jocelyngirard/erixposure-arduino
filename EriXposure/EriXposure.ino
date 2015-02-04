@@ -75,9 +75,9 @@ void setup()
 
   // Changing the integration time gives you a longer time over which to sense light
   // longer timelines are slower, but are good in very low light situtations!
-  luxMeter.setTiming(TSL2591_INTEGRATIONTIME_100MS);  // shortest integration time (bright light)
+  //luxMeter.setTiming(TSL2591_INTEGRATIONTIME_100MS);  // shortest integration time (bright light)
   //luxMeter.setTiming(TSL2591_INTEGRATIONTIME_200MS);
-  //luxMeter.setTiming(TSL2591_INTEGRATIONTIME_300MS);
+  luxMeter.setTiming(TSL2591_INTEGRATIONTIME_300MS);
   //luxMeter.setTiming(TSL2591_INTEGRATIONTIME_400MS);
   //luxMeter.setTiming(TSL2591_INTEGRATIONTIME_500MS);
   //luxMeter.setTiming(TSL2591_INTEGRATIONTIME_600MS);  // longest integration time (dim light)
@@ -155,10 +155,16 @@ void checkBatteryVoltage()
 
 float getLuxValue()
 {
-  sensors_event_t event;
-  luxMeter.getEvent(&event);
-  float lux = event.light;
-  return lux;
+//  sensors_event_t event;
+//  luxMeter.getEvent(&event);
+//  float lux = event.light;
+  
+  uint32_t lum = luxMeter.getFullLuminosity();
+  uint16_t ir, full;
+  ir = lum >> 16;
+  full = lum & 0xFFFF;
+  
+  return luxMeter.calculateLux(full, ir);
 }
 
 void readEepromValues()
@@ -176,7 +182,7 @@ void readEepromValues()
   lightMeteringType = EEPROM.read(LIGHT_TYPE_MEMORY_ADDR);
   if (lightMeteringType == 255)
   {
-    lightMeteringType = REFLECTED_METERING;
+    lightMeteringType = INCIDENT_METERING;
   } 
 }
 
@@ -216,29 +222,29 @@ void computeShutterSpeedAndDisplay()
   display.println(aperture, aperture == (int) aperture ? 0 : 1);
 
   // Out of Range management, this happens if the sensor is overloaded or senses no light.
-  if (luxValue == 0) 
+  if (luxValue <= 0.0f) 
   {
     display.println("OOR!");
   }
 
   // Minutes management
-  else if (exposureTimeInSeconds >= 60.0)
+  else if (exposureTimeInSeconds >= 60.0f)
   {
-    display.print(exposureTimeInSeconds / 60.0, 1);
+    display.print(exposureTimeInSeconds / 60.0f, 1);
     display.println("m");
   }
 
   // Seconds management 
-  else if ((exposureTimeInSeconds >= 0.75) && (exposureTimeInSeconds < 60))
+  else if ((exposureTimeInSeconds >= 0.75f) && (exposureTimeInSeconds < 60))
   {
     display.print(exposureTimeInSeconds, 1);
     display.println("s");
   }
 
   // Fractional time management, we find the nearest standard shutter speed linked to exposure time value
-  else if (exposureTimeInSeconds < 0.75)
+  else if (exposureTimeInSeconds < 0.75f)
   {
-    float shortestSpeedGap = 1.0;
+    float shortestSpeedGap = 1.0f;
     for (int index = 0; index < length(shutterSpeeds); index++)
     {
       float shutterSpeed = shutterSpeeds[index];
@@ -248,7 +254,7 @@ void computeShutterSpeedAndDisplay()
       {
         shortestSpeedGap = absSpeedGap;
         shutterSpeedIndex = index;
-        isPositive = speedGap < 0;
+        isPositive = speedGap < 0.0f;
       }
     }
     display.println(shutterSpeedTexts[shutterSpeedIndex]);
@@ -275,7 +281,7 @@ void computeShutterSpeedAndDisplay()
 
   // We display the Lux value
   display.setCursor(76, 22);
-  display.print(luxValue, 0);
+  display.print(luxValue, 1);
   display.println(" Lx");
 
   display.display();
