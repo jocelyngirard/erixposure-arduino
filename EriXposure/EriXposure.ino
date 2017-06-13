@@ -193,7 +193,7 @@ void computeShutterSpeedAndDisplay()
   float luxValue = getLuxValue();
   int shutterSpeedIndex = 0;
   boolean isPositive;
-  float exposureValue = log(luxValue / 2.5) / log(2);
+  float exposureValue = log(luxValue / (250 / isos[isoIndex])) / log(2);
 
   float aperture = apertures[apertureIndex];
 
