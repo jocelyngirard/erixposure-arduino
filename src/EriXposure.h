@@ -32,8 +32,8 @@
 // Buttons paramters
 #define PULLUP true                  //To keep things simple, we use the Arduino's internal pullup resistor.
 #define INVERT true                  //Since the pullup resistor will keep the pin high unless the
-                                     //switch is closed, this is negative logic, i.e. a high state
-                                     //means the button is NOT pressed. (Assuming a normally open switch.)
+//switch is closed, this is negative logic, i.e. a high state
+//means the button is NOT pressed. (Assuming a normally open switch.)
 #define DEBOUNCE_MS 20               //A debounce time of 20 milliseconds usually works well for tactile button switches.
 
 // 3-way switch button pins
@@ -57,20 +57,26 @@
 #define INCIDENT_CALIBRATION_CONSTANT     250
 
 // Available apertures
-const float apertures[] = { 1.2, 1.4, 1.8, 2, 2.8, 4, 5.6, 8, 11, 16 };
+const float apertures[] = {1.2, 1.4, 1.8, 2, 2.8, 4, 5.6, 8, 11, 16};
 
 // Available ISOs
-const float isos[] = { 100, 200, 400, 800, 1600, 3200, 6400 };
+const float isos[] = {100, 200, 400, 800, 1600, 3200, 6400};
 
 // Available shutter speeds
-const float shutterSpeeds[] = { 1/2.0, 1/4.0, 1/8.0, 1/15.0, 1/30.0, 1/60.0, 1/125.0, 1/250.0, 1/500.0, 1/1000.0, 1/2000.0, 1/4000.0, 1/8000.0 };
-const char* shutterSpeedTexts[] = { "1/2", "1/4", "1/8", "1/15", "1/30", "1/60", "1/125", "1/250", "1/500", "1/1000", "1/2000", "1/4000", "1/8000" };
+const float shutterSpeeds[] = {1 / 2.0, 1 / 4.0, 1 / 8.0, 1 / 15.0, 1 / 30.0, 1 / 60.0, 1 / 125.0, 1 / 250.0, 1 / 500.0,
+                               1 / 1000.0, 1 / 2000.0, 1 / 4000.0, 1 / 8000.0};
+const char *shutterSpeedTexts[] = {"1/2", "1/4", "1/8", "1/15", "1/30", "1/60", "1/125", "1/250", "1/500", "1/1000",
+                                   "1/2000", "1/4000", "1/8000"};
 
 // Functions declarations
 void checkBatteryVoltage();
+
 void handleButtons();
+
 void computeShutterSpeedAndDisplay();
+
 float getLuxValue();
+
 void readEepromValues();
 
 #endif
