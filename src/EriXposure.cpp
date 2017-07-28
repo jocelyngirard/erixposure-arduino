@@ -25,12 +25,11 @@
  ** N = sqrt(2^EV * t) = sqrt((Lux / (250 / ISO)) * t)
  */
 
-#include <EEPROM.h>
-#include <SPI.h>
+#include <Arduino.h>
 
-#include <Adafruit_GFX.h>
+#include <EEPROM.h>
+
 #include <Adafruit_SSD1306.h>
-#include <Adafruit_Sensor.h>
 #include <Adafruit_TSL2591.h>
 
 #include <Button.h>
