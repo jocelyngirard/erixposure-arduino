@@ -18,7 +18,7 @@
  ** 
  ** Lux = (250 / ISO) * 2^EV
  ** 2^EV = Lux / (250 / ISO)
- ** EV = log2(Lux / 2.5) = log(Lux / 2.5) / log(2)
+ ** EV = log2(2^EV) = log(2^EV) / log(2)
  ** 
  ** 2^EV = A^2 / t
  ** t = A^2 / 2^EV = A^2 / (Lux / (250 / ISO))
