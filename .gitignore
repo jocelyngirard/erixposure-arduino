@@ -9,6 +9,7 @@
 *.hex
 *.eep
 
+.idea
 CMakeCache.txt
 CMakeFiles
 Makefile
