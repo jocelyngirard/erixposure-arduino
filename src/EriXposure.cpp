@@ -32,7 +32,7 @@
 #include <Adafruit_SSD1306.h>
 #include <Adafruit_TSL2591.h>
 
-#include <Button.h>
+#include <JC_Button.h>
 
 #include "EriXposure.h"
 
