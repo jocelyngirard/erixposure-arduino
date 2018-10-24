@@ -17,3 +17,4 @@ cmake_install.cmake
 install_manifest.txt
 .pioenvs
 .piolibdeps
+CMakeListsPrivate.txt

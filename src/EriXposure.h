@@ -37,9 +37,15 @@
 #define DEBOUNCE_MS 20               //A debounce time of 20 milliseconds usually works well for tactile button switches.
 
 // 3-way switch button pins
-#define INC_BUTTON_PIN               16
-#define DEC_BUTTON_PIN               14
-#define ACTION_BUTTON_PIN            15
+#if defined(ARDUINO_SAMD_ZERO)
+#define INC_BUTTON_PIN          9
+#define ACTION_BUTTON_PIN       6
+#define DEC_BUTTON_PIN          5
+#else
+#define INC_BUTTON_PIN          16
+#define DEC_BUTTON_PIN          14
+#define ACTION_BUTTON_PIN       15
+#endif
 
 // OLED screen pins
 #define OLED_MOSI                    9

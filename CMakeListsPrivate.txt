@@ -20,6 +20,7 @@ include_directories("$ENV{HOME}/CLionProjects/erixposure-arduino/.piolibdeps/Ada
 include_directories("$ENV{HOME}/CLionProjects/erixposure-arduino/.piolibdeps/Adafruit SSD1306")
 include_directories("$ENV{HOME}/CLionProjects/erixposure-arduino/.piolibdeps/Adafruit TSL2591 Library")
 include_directories("$ENV{HOME}/CLionProjects/erixposure-arduino/.piolibdeps/Adafruit Unified Sensor")
+include_directories("$ENV{HOME}/CLionProjects/erixposure-arduino/.piolibdeps/FlashStorage/src")
 include_directories("$ENV{HOME}/CLionProjects/erixposure-arduino/.piolibdeps/JC_Button/src")
 include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoavr/libraries/__cores__/arduino/EEPROM/src")
 include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoavr/libraries/__cores__/arduino/SPI/src")

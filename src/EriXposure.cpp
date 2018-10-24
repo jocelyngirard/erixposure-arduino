@@ -27,7 +27,11 @@
 
 #include <Arduino.h>
 
-#include <EEPROM.h>
+#if defined(ARDUINO_SAMD_ZERO)
+# include <FlashAsEEPROM.h>
+#else
+# include <EEPROM.h>
+#endif
 
 #include <Adafruit_SSD1306.h>
 #include <Adafruit_TSL2591.h>
@@ -36,11 +40,20 @@
 
 #include "EriXposure.h"
 
+#if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
+#define Serial SERIAL_PORT_USBVIRTUAL
+#endif
+
 #if (SSD1306_LCDHEIGHT != 32)
 # error("Height incorrect, please fix Adafruit_SSD1306.h!");
 #endif
 
+#if defined(ARDUINO_SAMD_ZERO)
+Adafruit_SSD1306 display = Adafruit_SSD1306();
+#else
 Adafruit_SSD1306 display(OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
+#endif
+
 Adafruit_TSL2591 luxMeter = Adafruit_TSL2591(2591);
 
 Button incrementButton(INC_BUTTON_PIN, PULLUP, INVERT, DEBOUNCE_MS);
