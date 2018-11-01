@@ -24,6 +24,8 @@
 #define BATTERY_MIN_VOLTAGE_PER_CELL 3.7 // 3.7v per cell
 #define BATTERY_MIN_VOLTAGE          BATTERY_CELLS_COUNT * BATTERY_MIN_VOLTAGE_PER_CELL
 
+#define DATA_WRITING_ENABLED false
+
 // EEPROM Memory addresses
 #define APERTURE_MEMORY_ADDR         0
 #define ISO_MEMORY_ADDR              1
@@ -76,8 +78,6 @@ const char *shutterSpeedTexts[] = {"1/2", "1/4", "1/8", "1/15", "1/30", "1/60", 
 
 // Functions declarations
 void checkBatteryVoltage();
-
-void handleButtons();
 
 void computeShutterSpeedAndDisplay();
 

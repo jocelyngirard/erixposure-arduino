@@ -11,7 +11,7 @@ add_custom_target(
 
 add_custom_target(
     PLATFORMIO_UPLOAD ALL
-    COMMAND ${PLATFORMIO_CMD} -f -c clion run --target upload
+    COMMAND ${PLATFORMIO_CMD} -f -c clion run --target upload -e adafruit_feather_m0
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 

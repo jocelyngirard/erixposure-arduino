@@ -108,7 +108,9 @@ void loop() {
         } else {
             apertureIndex += 1;
         }
-        EEPROM.write(APERTURE_MEMORY_ADDR, apertureIndex);
+        if (DATA_WRITING_ENABLED) {
+            EEPROM.write(APERTURE_MEMORY_ADDR, apertureIndex);
+        }
         computeShutterSpeedAndDisplay();
     } else if (decrementButton.wasReleased() == true) {
         if (isoIndex >= (sizeof(isos) / sizeof(float) - 1)) {
@@ -116,7 +118,9 @@ void loop() {
         } else {
             isoIndex += 1;
         }
-        EEPROM.write(ISO_MEMORY_ADDR, isoIndex);
+        if (DATA_WRITING_ENABLED) {
+            EEPROM.write(ISO_MEMORY_ADDR, isoIndex);
+        }
         computeShutterSpeedAndDisplay();
     }
 }
@@ -170,7 +174,7 @@ void readEepromValues() {
         isoIndex = 2;
     }
     lightMeteringType = EEPROM.read(LIGHT_TYPE_MEMORY_ADDR);
-    if (lightMeteringType == 255) {
+    if (lightMeteringType >= 2) {
         lightMeteringType = INCIDENT_METERING;
     }
 }
