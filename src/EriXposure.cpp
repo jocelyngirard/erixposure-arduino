@@ -30,7 +30,9 @@
 #if defined(ARDUINO_SAMD_ZERO)
 # include <FlashAsEEPROM.h>
 #else
+
 # include <EEPROM.h>
+
 #endif
 
 #include <Adafruit_SSD1306.h>
@@ -60,9 +62,9 @@ Button incrementButton(INC_BUTTON_PIN, PULLUP, INVERT, DEBOUNCE_MS);
 Button decrementButton(DEC_BUTTON_PIN, PULLUP, INVERT, DEBOUNCE_MS);
 Button meteringButton(ACTION_BUTTON_PIN, PULLUP, INVERT, DEBOUNCE_MS);
 
-int apertureIndex;
-int isoIndex;
-int lightMeteringType;
+unsigned int apertureIndex;
+unsigned int isoIndex;
+unsigned int lightMeteringType;
 
 void setup() {
     pinMode(INC_BUTTON_PIN, INPUT_PULLUP); //Set up pin modes and start serial for debugging
@@ -95,14 +97,13 @@ void setup() {
 }
 
 void loop() {
-    Serial.print("Yo");
     incrementButton.read();
     decrementButton.read();
     meteringButton.read();
 
-    if (meteringButton.wasReleased() == true) {
+    if (meteringButton.wasReleased()) {
         computeShutterSpeedAndDisplay();
-    } else if (incrementButton.wasReleased() == true) {
+    } else if (incrementButton.wasReleased()) {
         if (apertureIndex >= (sizeof(apertures) / sizeof(float) - 1)) {
             apertureIndex = 0;
         } else {
@@ -112,7 +113,7 @@ void loop() {
             EEPROM.write(APERTURE_MEMORY_ADDR, apertureIndex);
         }
         computeShutterSpeedAndDisplay();
-    } else if (decrementButton.wasReleased() == true) {
+    } else if (decrementButton.wasReleased()) {
         if (isoIndex >= (sizeof(isos) / sizeof(float) - 1)) {
             isoIndex = 0;
         } else {
@@ -184,7 +185,7 @@ void computeShutterSpeedAndDisplay() {
 
     float luxValue = getLuxValue();
     int shutterSpeedIndex = 0;
-    boolean isPositive;
+    boolean isPositive = false;
     float exposureValue = log(luxValue / (250 / isos[isoIndex])) / log(2);
 
     float aperture = apertures[apertureIndex];
@@ -212,25 +213,19 @@ void computeShutterSpeedAndDisplay() {
     display.print("f/");
     display.println(aperture, aperture == (int) aperture ? 0 : 1);
 
-    // Out of Range management, this happens if the sensor is overloaded or senses no light.
     if (luxValue <= 0.0f) {
+        // Out of Range management, this happens if the sensor is overloaded or senses no light.
         display.println("OOR!");
-    }
-
+    } else if (exposureTimeInSeconds >= 60.0f) {
         // Minutes management
-    else if (exposureTimeInSeconds >= 60.0f) {
         display.print(exposureTimeInSeconds / 60.0f, 1);
         display.println("m");
-    }
-
+    } else if ((exposureTimeInSeconds >= 0.75f) && (exposureTimeInSeconds < 60)) {
         // Seconds management
-    else if ((exposureTimeInSeconds >= 0.75f) && (exposureTimeInSeconds < 60)) {
         display.print(exposureTimeInSeconds, 1);
         display.println("s");
-    }
-
+    } else if (exposureTimeInSeconds < 0.75f) {
         // Fractional time management, we find the nearest standard shutter speed linked to exposure time value
-    else if (exposureTimeInSeconds < 0.75f) {
         float shortestSpeedGap = 1.0f;
         for (int index = 0; index < length(shutterSpeeds); index++) {
             float shutterSpeed = shutterSpeeds[index];

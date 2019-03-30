@@ -10,7 +10,7 @@
 #ifndef ERIXPOSURE_H
 #define ERIXPOSURE_H
 
-#define length(array)  (sizeof(array) / sizeof(array[0]))
+#define length(array) (sizeof(array) / sizeof(array[0]))
 
 // Adafruit GFX characters size
 #define CHAR_WIDTH                   5
@@ -24,7 +24,7 @@
 #define BATTERY_MIN_VOLTAGE_PER_CELL 3.7 // 3.7v per cell
 #define BATTERY_MIN_VOLTAGE          BATTERY_CELLS_COUNT * BATTERY_MIN_VOLTAGE_PER_CELL
 
-#define DATA_WRITING_ENABLED false
+#define DATA_WRITING_ENABLED true
 
 // EEPROM Memory addresses
 #define APERTURE_MEMORY_ADDR         0
