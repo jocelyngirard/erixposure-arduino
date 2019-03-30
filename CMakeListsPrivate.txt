@@ -53,4 +53,4 @@ include_directories("$ENV{HOME}/.platformio/packages/toolchain-atmelavr/lib/gcc/
 include_directories("$ENV{HOME}/.platformio/packages/toolchain-atmelavr/lib/gcc/avr/4.9.2/include-fixed")
 include_directories("$ENV{HOME}/.platformio/packages/tool-unity")
 
-FILE(GLOB_RECURSE SRC_LIST "/Users/jclngrrd/CLionProjects/erixposure-arduino/src/*.*" "/Users/jclngrrd/CLionProjects/erixposure-arduino/lib/*.*" "/Users/jclngrrd/CLionProjects/erixposure-arduino/.piolibdeps/*.*")
+FILE(GLOB_RECURSE SRC_LIST "./src/*.*" "./lib/*.*" "./.piolibdeps/*.*")
